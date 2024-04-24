@@ -1,6 +1,5 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
-const mongodbUri = require('mongodb-uri');
 const hbs = require('hbs');
 const path = require('path');
 
@@ -13,13 +12,8 @@ app.set('view engine', 'hbs');
 // Set the directory for the views
 app.set('views', path.join(__dirname, 'views'));
 
-// Set the directory for the partials (if needed)
-hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
-
 // Parse the MongoDB URI from the environment variable
-const uriObject = mongodbUri.parse(process.env.MONGOBD_URI);
-const uri = mongodbUri.format(uriObject);
-
+const uri = process.env.MONGODB_URI;
 
 app.get('/', (req, res) => {
   res.render('home'); // Render the 'home.hbs' template
@@ -37,7 +31,7 @@ app.get('/process', (req, res) => {
       return res.status(500).send('Error connecting to database');
     }
 
-    const db = client.db(uriObject.database);
+    const db = client.db(); // No need to specify the database name here
     const collection = db.collection('PublicCompanies');
 
     let query = {};
@@ -58,13 +52,15 @@ app.get('/process', (req, res) => {
 
       // Render the 'process.hbs' template with the search results
       res.render('process', { searchTerm, searchType, result });
-    });
 
-    // Close the MongoDB connection
-    client.close();
+      // Close the MongoDB connection
+      client.close();
+    });
   });
 });
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
 
