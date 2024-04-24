@@ -6,7 +6,7 @@ const MongoClient = require('mongodb').MongoClient;
 const app = express();
 const port = process.env.PORT || 3000;
 
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGOBD_URI;
 
 // Serve static files (CSS, images, etc.)
 app.use(express.static('public'));
