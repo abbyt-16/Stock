@@ -1,0 +1,14 @@
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <h1>Search for a Stock</h1>
+    <form action="/process" method="get">
+        <input type="text" name="searchTerm" placeholder="Enter stock ticker or company name">
+        <input type="radio" name="searchType" value="ticker" checked> Ticker
+        <input type="radio" name="searchType" value="company"> Company
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>
