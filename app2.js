@@ -4,7 +4,7 @@ const csvtojson = require('csvtojson');
 const MongoClient = require('mongodb').MongoClient;
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // MongoDB connection URI
 const uri = 'mongodb://localhost:27017';
@@ -49,5 +49,5 @@ app.get('/process', (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running on port ${port}`);
 });
