@@ -1,54 +1,70 @@
-// app.js
 const express = require('express');
-const csvtojson = require('csvtojson');
-const MongoClient = require('mongodb').MongoClient;
+const { MongoClient } = require('mongodb');
+const mongodbUri = require('mongodb-uri');
+const hbs = require('hbs');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const uri = process.env.MONGOBD_URI;
-
-// Serve static files (CSS, images, etc.)
-app.use(express.static('public'));
-
-// Set up view engine
+// Set the view engine to use Handlebars
 app.set('view engine', 'hbs');
 
-// Home view
+// Set the directory for the views
+app.set('views', path.join(__dirname, 'views'));
+
+// Set the directory for the partials (if needed)
+hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
+
+// Parse the MongoDB URI from the environment variable
+const uriObject = mongodbUri.parse(process.env.MONGOBD_URI);
+const uri = mongodbUri.format(uriObject);
+
+
 app.get('/', (req, res) => {
-  res.render('home');
+  res.render('home'); // Render the 'home.hbs' template
 });
 
-// Process view
 app.get('/process', (req, res) => {
+  // Process form data and render the 'process.hbs' template
   const searchTerm = req.query.searchTerm;
   const searchType = req.query.searchType;
 
-  MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, ssl: true }, (err, client) => {
+  // Connect to the MongoDB database
+  MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
     if (err) {
       console.error(err);
-      return;
+      return res.status(500).send('Error connecting to database');
     }
-    const db = client.db('Stock'); // Specify your database name here
+
+    const db = client.db(uriObject.database);
     const collection = db.collection('PublicCompanies');
 
     let query = {};
-    let projection = { _id: 0, company_name: 1, stock_ticker: 1, stock_price: 1 };
     if (searchType === 'ticker') {
       query = { stock_ticker: searchTerm };
     } else if (searchType === 'company') {
       query = { company_name: searchTerm };
     }
 
-    collection.find(query, projection).toArray((err, result) => {
-      if (err) throw err;
-      console.log(result);
-      res.render('process.hbs', { result });
+    // Find matching documents in the collection
+    collection.find(query).toArray((err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Error querying database');
+      }
+
+      console.log('Search results:', result);
+
+      // Render the 'process.hbs' template with the search results
+      res.render('process', { searchTerm, searchType, result });
     });
+
+    // Close the MongoDB connection
+    client.close();
   });
 });
-
-// Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
