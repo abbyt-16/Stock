@@ -42,7 +42,7 @@ app.get('/process', (req, res) => {
     collection.find(query).toArray((err, result) => {
       if (err) throw err;
       console.log(result);
-      res.render('process', { result });
+      res.render('process.hbs', { result });
     });
   });
 });
