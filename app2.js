@@ -6,10 +6,7 @@ const MongoClient = require('mongodb').MongoClient;
 const app = express();
 const port = process.env.PORT || 3000;
 
-// MongoDB connection URI
-const uri = 'mongodb://localhost:27017';
-const dbName = 'Stock';
-const collectionName = 'PublicCompanies';
+const uri = process.env.MONGODB_URI;
 
 // Serve static files (CSS, images, etc.)
 app.use(express.static('public'));
@@ -28,9 +25,12 @@ app.get('/process', (req, res) => {
   const searchType = req.query.searchType;
 
   MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
-    if (err) throw err;
-    const db = client.db(dbName);
-    const collection = db.collection(collectionName);
+    if (err) {
+      console.error(err);
+      return;
+    }
+    const db = client.db('Stock'); // Specify your database name here
+    const collection = db.collection('PublicCompanies');
 
     let query = {};
     if (searchType === 'ticker') {
