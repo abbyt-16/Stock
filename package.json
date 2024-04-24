@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "node app.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "csv-parser": "^3.0.0",
@@ -12,7 +12,7 @@
   },
   "name": "stock",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "server.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/abbyt-16/Stock.git"
