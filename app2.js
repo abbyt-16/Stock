@@ -33,13 +33,14 @@ app.get('/process', (req, res) => {
     const collection = db.collection('PublicCompanies');
 
     let query = {};
+    let projection = { _id: 0, company_name: 1, stock_ticker: 1, stock_price: 1 };
     if (searchType === 'ticker') {
       query = { stock_ticker: searchTerm };
     } else if (searchType === 'company') {
       query = { company_name: searchTerm };
     }
 
-    collection.find(query).toArray((err, result) => {
+    collection.find(query, projection).toArray((err, result) => {
       if (err) throw err;
       console.log(result);
       res.render('process.hbs', { result });
