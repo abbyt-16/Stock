@@ -13,7 +13,7 @@ app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Parse the MongoDB URI from the environment variable
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGOBD_URI;
 
 app.get('/', (req, res) => {
   res.render('home'); // Render the 'home.hbs' template
