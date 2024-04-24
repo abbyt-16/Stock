@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "index.html"
+    "start": "node app.js"
   },
   "dependencies": {
     "csv-parser": "^3.0.0",
