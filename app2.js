@@ -24,7 +24,7 @@ app.get('/process', (req, res) => {
   const searchTerm = req.query.searchTerm;
   const searchType = req.query.searchType;
 
-  MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
+  MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, ssl: true }, (err, client) => {
     if (err) {
       console.error(err);
       return;
